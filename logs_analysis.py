@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+"""This module is an executable script for generating logs from a database."""
 
 import argparse
 import sys
@@ -13,18 +14,17 @@ NEWS_DATABASE = 'news'
 
 
 def print_results(results={}, result_headers=[]):
-    '''
-        Prints the results as a PSQL formatted table.
+    """Print the results as a PSQL formatted table.
 
-        args:
-            results - a list of dictionaries. The list of results returned
-            by the query.
-            result_headers - a list of strings. The column headers for the
-            table.
-        raises:
-            PrintException - if the results cannot be printed
-    '''
+    Args:
+        results(list[dict]): The list of results returned by the query.
+            Defaults to an empty dict.
+        result_headers(list[str]): The column headers for the table.
+            Defaults to an empty list.
+    Raises:
+        PrintException: If the results cannot be printed for any reason
 
+    """
     resultsIsList = isinstance(results, list)
     headersIsList = isinstance(result_headers, list)
 
@@ -42,8 +42,7 @@ def print_results(results={}, result_headers=[]):
 
 
 def print_top_three_articles():
-    '''  Prints the top three articles of all time. '''
-
+    """Print the top three articles of all time."""
     print('Retrieving top three articles of all time...')
 
     news_db = PsqlDb(NEWS_DATABASE)
@@ -55,8 +54,7 @@ def print_top_three_articles():
 
 
 def print_top_authors():
-    ''' Prints authors ranked by article views '''
-
+    """Print authors ranked by article views."""
     print('Retrieving authors ranked by article views...')
 
     news_db = PsqlDb(NEWS_DATABASE)
@@ -68,11 +66,7 @@ def print_top_authors():
 
 
 def print_errors_over_one_percent():
-    '''
-        Prints the days where more than one percent of total
-        requests were errors.
-    '''
-
+    """Print days where more than one percent of total requests were errors."""
     print('Retrieving days where more than one percent of total '
           'requests were errors')
 
@@ -85,16 +79,16 @@ def print_errors_over_one_percent():
 
 
 def generate_news_log(debug_mode=False):
-    '''
-        Prints the results of several queries on the news database.
+    """Print results of several queries on the news database.
 
-        args:
-            debug_mode - Exceptions will be printed if True, False by default.
-        raises:
-            PrintException - If an error occurs while printing query results.
-            PsqlDbException - If an error occurs while interating with the
-                              database
-    '''
+    Args:
+        debug_mode(bool, optional) - Exceptions will be printed if True.
+            Defaults to False.
+    Raises:
+        PrintException: If an error occurs while printing query results.
+        PsqlDbException: If an error occurs while interating with the database
+
+    """
     try:
         print_top_three_articles()
         print_top_authors()
@@ -108,6 +102,10 @@ def generate_news_log(debug_mode=False):
 
 
 if __name__ == '__main__':
+    """Parse command line arguments to determine database to generate logs for.
+
+    usage: logs_analysis.py [-h] [-d] {news}
+    """
     parser = argparse.ArgumentParser(description='Generate a log of '
                                      'interesting information about the '
                                      'specified database.')
