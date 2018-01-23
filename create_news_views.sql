@@ -1,23 +1,28 @@
 /*
-  This file crews the views needed by the news database log generator.
+  This file creates the views needed by the news database log generator.
 */
 
-create view failed_requests_by_date_view as
-select
-  date(time) as error_date, count(time) as num_errors
-from
-  log
-where
-  status like '4%'
-  or status like '5%'
-group by error_date
-order by error_date asc;
+CREATE OR REPLACE VIEW failed_requests_by_date_view AS
+SELECT
+    DATE(time) AS error_date,
+    COUNT(time) AS num_errors
+FROM
+    log
+WHERE
+    status LIKE '4%'
+    OR status LIKE '5%'
+GROUP BY
+    error_date
+ORDER BY
+    error_date ASC;
 
-
-create view total_requests_by_date_view as
-select
-  date(time) as request_date, count(time) as num_requests
-from
-  log
-group by request_date
-order by request_date asc;
+CREATE OR REPLACE VIEW total_requests_by_date_view AS
+SELECT
+    DATE(TIME) AS request_date,
+    COUNT(time) AS num_requests
+FROM
+    log
+GROUP BY
+    request_date
+ORDER BY
+    request_date ASC;
