@@ -1,51 +1,61 @@
-''' This file contains PostgreSQL query strings for the News table '''
+#!/usr/bin/env python3
+"""This file contains PostgreSQL query strings for the News table."""
 
 
 top_three_articles = '''
-select
-    articles.title, count(*) as num_views
-from
+SELECT
+    articles.title,
+    COUNT(*) AS num_views
+FROM
     articles, log
-where
+WHERE
     (log.path='/article/' || articles.slug)
-group by articles.title
-order by num_views desc
-limit 3;
+GROUP BY
+    articles.title
+ORDER BY
+    num_views DESC
+LIMIT 3;
 '''
 
 author_id_num_views = '''
-select
-    articles.author, count(*) as num_views
-from
+SELECT
+    articles.author,
+    COUNT(*) AS num_views
+FROM
     log,
     articles
-where
+WHERE
     (log.path='/article/' || articles.slug)
-group by articles.author
-order by num_views desc
+GROUP BY
+    articles.author
+ORDER BY
+    num_views DESC
 '''
 
 top_authors = '''
-select
+SELECT
     authors.name,
     num_views
-from
-    ({}) as author_id_num_views,
+FROM
+    ({}) AS author_id_num_views,
     authors
-where
+WHERE
     author_id_num_views.author = authors.id
 '''.format(author_id_num_views)
 
 errors_over_one_percent = '''
-select
+SELECT
     request_date,
-    percent_errors * 100 as percent_errors
-from (
-    select
+    percent_errors * 100 AS percent_errors
+FROM (
+    SELECT
         request_date,
-        cast(tf.num_errors as float) / tr.num_requests as percent_errors
-    from total_requests_by_date_view as tr, failed_requests_by_date_view as tf
-        where tr.request_date = tf.error_date) as all_percent_errors
-where
+        CAST(tf.num_errors AS float) / tr.num_requests AS percent_errors
+    FROM
+        total_requests_by_date_view AS tr,
+        failed_requests_by_date_view AS tf
+    WHERE
+        tr.request_date = tf.error_date) AS all_percent_errors
+WHERE
     percent_errors > .01;
 '''
